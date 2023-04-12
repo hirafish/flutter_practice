@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -21,7 +23,9 @@ class MemberList extends StatefulWidget {
 
 class _MemberListState extends State<MemberList> {
   final List<String> members = [];
-  var _userController = TextEditingController();
+  final _userController = TextEditingController();
+  List<String> groupOne = [];
+  List<String> groupTwo = [];
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +44,7 @@ class _MemberListState extends State<MemberList> {
               border: OutlineInputBorder(),
             ),
           ),
+          SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
               final memberName = _userController.text; // 追加するメンバーの名前を入力する
@@ -51,7 +56,7 @@ class _MemberListState extends State<MemberList> {
             },
             child: Text('Add Member'),
           ),
-          Expanded(
+          Flexible(
             child: ListView.builder(
               itemCount: members.length,
               itemBuilder: (context, index) {
@@ -66,6 +71,59 @@ class _MemberListState extends State<MemberList> {
                         }));
               },
             ),
+          ),
+          ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  var sortMembers = List.of(members);
+                  sortMembers.shuffle();
+                  groupOne =
+                      sortMembers.getRange(0, sortMembers.length ~/ 2).toList();
+                  groupTwo = sortMembers
+                      .getRange(sortMembers.length ~/ 2, sortMembers.length)
+                      .toList();
+                  debugPrint(sortMembers.join(","));
+                  debugPrint(groupOne.join(","));
+                  debugPrint(groupTwo.join(","));
+                });
+              },
+              child: Text(
+                "2グループに分ける",
+              )),
+          SizedBox(height: 16),
+          Row(
+            children: <Widget>[
+              Expanded(
+                flex: 5, // 割合.
+                child: Container(
+                  height: 200,
+                  color: Colors.red,
+                  child: ListView.builder(
+                    itemCount: groupOne.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(groupOne[index]),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 5, // 割合.
+                child: Container(
+                  color: Colors.blue,
+                  height: 200,
+                  child: ListView.builder(
+                    itemCount: groupTwo.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(groupTwo[index]),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
